@@ -1,4 +1,4 @@
-# Self-Driving Trailer Agent — Design Document
+
 
 **ICS 3202: Artificial Intelligence — Practical Exercise 3**
 
@@ -12,7 +12,7 @@
 ## 1. PEAS Framework
 
 | Component | Description |
-|---|---|
+
 | **Performance measure** | Safe, timely, fuel-efficient delivery of cargo; minimizing total distance/time traveled; avoiding collisions; obeying traffic laws; minimizing wear on trailer/cargo damage; customer satisfaction |
 | **Environment** | Kenyan road network (highways, towns, junctions, traffic, pedestrians, other vehicles, weather, road conditions, roundabouts) |
 | **Actuators** | Steering wheel/motor, accelerator, brakes, gear shift, trailer coupling control, indicators, headlights, horn |
@@ -100,16 +100,12 @@ graph TD
     style I fill:#F0997B,color:#000
 ```
 
-Numbers in parentheses are cumulative path cost (distance so far) from Nairobi. Paths that return to an already-visited town are pruned. The Thika → Nyeri branch (Central Highlands) does not lead to Kisumu in this graph, so it is a dead end relative to the goal.
 
 ## 5. Optimal Path: Nairobi → Kisumu (Uniform-Cost Search)
 
-Since distance is the path cost function, this is solved with Uniform-Cost Search (equivalent to Dijkstra's algorithm): the node with the lowest cumulative cost is always expanded next, and the search stops only when the goal is **expanded**, not when it is first added to the frontier.
-
-### Step-by-step expansion
 
 | Step | Node expanded | Cumulative cost (km) | Frontier after expansion |
-|---|---|---|---|
+
 | 1 | Nairobi | 0 | Thika: 45, Naivasha: 90 |
 | 2 | Thika | 45 | Naivasha: 90, Nyeri: 158 |
 | 3 | Naivasha | 90 | Nyeri: 158, Nakuru: 160 |
@@ -117,13 +113,12 @@ Since distance is the path cost function, this is solved with Uniform-Cost Searc
 | 5 | Nakuru | 160 | Kericho: 266, Eldoret: 316 |
 | 6 | Kericho | 266 | Eldoret: 316, Kisumu: 351 |
 | 7 | Eldoret | 316 | Kisumu: 351 (the path via Eldoret reaches Kisumu at 433, which is worse, so it is discarded) |
-| 8 | **Kisumu** | **351** | Goal expanded — stop |
+| 8 | Kisumu | 351 | Goal expanded — halt |
 
 ### Candidate paths compared
 
 | Route | Calculation | Total distance |
-|---|---|---|
-| Nairobi → Naivasha → Nakuru → **Kericho** → Kisumu | 90 + 70 + 106 + 85 | **351 km** ✅ |
+| Nairobi → Naivasha → Nakuru → **Kericho** → Kisumu | 90 + 70 + 106 + 85 | 351 km ✅ |
 | Nairobi → Naivasha → Nakuru → Eldoret → Kisumu | 90 + 70 + 156 + 117 | 433 km |
 
 ### Conclusion
@@ -134,10 +129,4 @@ The optimal path from Nairobi to Kisumu is:
 
 Uniform-Cost Search expands Eldoret (316 km) before Kisumu because it is cheaper at that point, but the route through Eldoret only reaches Kisumu at 433 km. The 351 km route via Kericho therefore stays the cheapest on the frontier and is returned as the optimal path, 82 km shorter than the alternative.
 
-## 6. Group Work Evidence
 
-Team photo taken during our working session on this exercise:
-
-![Team working session](images/team-photo.jpg)
-
-_From left to right: [Name], [Name], [Name]._
